@@ -4,12 +4,7 @@ using System.Collections.Generic;
 
 namespace DataService.Interfaces
 {
-    public interface IStudentsService
+    public interface IStudentsService : IService<Student>
     {
-        Student Create(Student student);
-        Student Read(int id);
-        IEnumerable<Student> Read();
-        void Update(int id, Student entity);
-        void Delete(int id);
     }
 }

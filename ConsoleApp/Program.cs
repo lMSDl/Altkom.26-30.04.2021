@@ -7,7 +7,8 @@ namespace ConsoleApp
 {
     class Program
     {
-        static IStudentsService Service { get; } = new StudentsService();
+        static IStudentsService StudentsService { get; } = new StudentsService();
+        static IService<Educator> EducatorsService { get; } = new Service<Educator>();
 
         static void Main(string[] args)
         {
@@ -21,13 +22,20 @@ namespace ConsoleApp
             Person person;
             person = student1;
             person = educator1;
-            
-            Service.Create(student1);
-            student2 = Service.Create(student2);
-            var student3 = new Student() { Address = "Kwiatowa 44" };
-            Service.Update(student2.Id, student3);
 
-            foreach (var item in Service.Read())
+            StudentsService.Create(student1);
+            student2 = StudentsService.Create(student2);
+            var student3 = new Student() { Address = "Kwiatowa 44" };
+            StudentsService.Update(student2.Id, student3);
+
+            foreach (var item in StudentsService.Read())
+            {
+                Console.WriteLine(item.ToJson());
+            }
+
+            EducatorsService.Create(educator1);
+            EducatorsService.Create(educator2);
+            foreach (var item in EducatorsService.Read())
             {
                 Console.WriteLine(item.ToJson());
             }
