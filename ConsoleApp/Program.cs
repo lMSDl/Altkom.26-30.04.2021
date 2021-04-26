@@ -1,31 +1,71 @@
-﻿using System;
-using ConsoleApp.Delegates;
-using ConsoleApp.LambdaExamples;
+﻿using ConsoleApp.Config;
 using DataService;
 using DataService.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Models;
+using System;
 
 namespace ConsoleApp
 {
-    class Program
+    internal class Program
     {
-        static IStudentsService StudentsService { get; } = new StudentsService();
-        static IService<Educator> EducatorsService { get; } = new Service<Educator>();
+        private static IStudentsService StudentsService { get; } = new StudentsService();
+        private static IService<Educator> EducatorsService { get; } = new Service<Educator>();
 
-        static void Main(string[] args)
+        private static Settings Settings { get; } = new Settings();
+        private static IConfigurationRoot Config { get; set; }
+
+        private static void Main(string[] args)
         {
-            var example = new LinqExamples();
-            example.Execute();
+            Configuration();
+
+        }
+
+        private static void ConfigurationExample()
+        {
+            Hello(Config["HelloJson"]);
+            Hello(Config["HelloYaml"]);
+            Hello(Config["HelloIni"]);
+
+            Console.WriteLine(Config["Data"]);
+
+            Settings settings = new Settings();
+            Console.WriteLine(settings.Data);
+
+            Hello(Config["Section:Key2"], Config["Section:Subsection:Key1"]);
+            Hello(settings.Section.Key2, settings.Section.Subsection.Key1);
+        }
+
+        private static void Configuration()
+        {
+            Config = new ConfigurationBuilder()
+                .AddXmlFile("Config\\config.xml")
+                .AddYamlFile("Config\\config.yaml")
+                .AddJsonFile("Config\\config.json", false, true)
+                .AddIniFile("Config\\config.ini")
+                .AddIniFile("Config\\config2.ini", true)
+                .Build();
+            Config.Bind(Settings);
+        }
+
+        private static void Hello(string hello, string from)
+        {
+            Console.WriteLine($"{hello} {from}");
+        }
+
+        private static void Hello(string @string)
+        {
+            Console.WriteLine($"Hello {@string}");
         }
 
         private static void Service()
         {
             Console.WriteLine("Hello World!");
 
-            var student1 = new Student();
-            var student2 = new Student("Ewa", "Ewowska") { BirthDate = new DateTime(1985, 4, 22) };
-            var educator1 = new Educator() { FirstName = "Damian", LastName = "Damianowski" };
-            var educator2 = new Educator() { FirstName = "Damian", LastName = "Damianowski", Address = "Warszawska 12" };
+            Student student1 = new Student();
+            Student student2 = new Student("Ewa", "Ewowska") { BirthDate = new DateTime(1985, 4, 22) };
+            Educator educator1 = new Educator() { FirstName = "Damian", LastName = "Damianowski" };
+            Educator educator2 = new Educator() { FirstName = "Damian", LastName = "Damianowski", Address = "Warszawska 12" };
 
             Person person;
             person = student1;
@@ -33,17 +73,17 @@ namespace ConsoleApp
 
             StudentsService.Create(student1);
             student2 = StudentsService.Create(student2);
-            var student3 = new Student() { Address = "Kwiatowa 44" };
+            Student student3 = new Student() { Address = "Kwiatowa 44" };
             StudentsService.Update(student2.Id, student3);
 
-            foreach (var item in StudentsService.Read())
+            foreach (Student item in StudentsService.Read())
             {
                 Console.WriteLine(item.ToJson());
             }
 
             EducatorsService.Create(educator1);
             EducatorsService.Create(educator2);
-            foreach (var item in EducatorsService.Read())
+            foreach (Educator item in EducatorsService.Read())
             {
                 Console.WriteLine(item.ToJson());
             }

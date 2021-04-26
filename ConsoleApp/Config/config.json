@@ -1,0 +1,11 @@
+﻿{
+  "HelloJson": "from json",
+  "Data": "json data",
+  "Section": {
+    "Key1": "Hello",
+    "Key2": "Bye",
+    "Subsection": {
+      "Key1":  "from Json"
+    }
+  }
+}
