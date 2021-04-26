@@ -1,7 +1,10 @@
 ﻿using ConsoleApp.Config;
+using ConsoleApp.Services;
 using DataService;
 using DataService.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Models;
 using System;
 
@@ -11,6 +14,7 @@ namespace ConsoleApp
     {
         private static IStudentsService StudentsService { get; } = new StudentsService();
         private static IService<Educator> EducatorsService { get; } = new Service<Educator>();
+        static ServiceProvider ServiceProvider { get; set; }
 
         private static Settings Settings { get; } = new Settings();
         private static IConfigurationRoot Config { get; set; }
@@ -18,7 +22,23 @@ namespace ConsoleApp
         private static void Main(string[] args)
         {
             Configuration();
+            ConfigureServiceProvider();
 
+            var writer = ServiceProvider.GetService<IWriteService>();
+            writer.WriteLine("service from provider");
+
+            writer = ServiceProvider.GetService<IFiggleWriteService>();
+            writer.WriteLine("Figgle service from provider");
+        }
+
+        private static void ConfigureServiceProvider()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection
+                .AddScoped<IWriteService, ConsoleService>()
+                .AddScoped<IFiggleWriteService, FiggleWriteService>()
+                .AddLogging(x => x.AddConsole().AddDebug().AddConfiguration(Config.GetSection("Logging")));
+            ServiceProvider = serviceCollection.BuildServiceProvider();
         }
 
         private static void ConfigurationExample()

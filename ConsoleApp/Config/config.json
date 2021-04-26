@@ -5,7 +5,10 @@
     "Key1": "Hello",
     "Key2": "Bye",
     "Subsection": {
-      "Key1":  "from Json"
+      "Key1": "from Json"
     }
+  },
+  "Logging": {
+    "LogLevel": "Trace"
   }
 }
