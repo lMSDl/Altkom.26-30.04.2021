@@ -1,7 +1,7 @@
 ﻿using DataService.Interfaces;
 using Models;
 using Models.Base;
-using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace DataService
@@ -12,12 +12,14 @@ namespace DataService
 
         public T Create(T entity)
         {
-            var maxId = 0;
-            foreach (var item in Entities)
-            {
-                if (maxId < item.Id)
-                    maxId = item.Id;
-            }
+            //var maxId = 0;
+            //foreach (var item in Entities)
+            //{
+            //    if (maxId < item.Id)
+            //        maxId = item.Id;
+            //}
+
+            var maxId = Entities.Max(x => x.Id);
             entity.Id = ++maxId;
             Entities.Add(entity);
 
@@ -34,17 +36,19 @@ namespace DataService
 
         public T Read(int id)
         {
-            foreach (var item in Entities)
-            {
-                if (id == item.Id)
-                    return item;
-            }
-            return null;
+            //foreach (var item in Entities)
+            //{
+            //    if (id == item.Id)
+            //        return item;
+            //}
+            //return null;
+            return Entities.SingleOrDefault(x => x.Id == id);
         }
 
         public IEnumerable<T> Read()
         {
-            return new List<T>(Entities);
+            //return new List<T>(Entities);
+            return Entities.ToList();
         }
 
         public void Update(int id, T entity)

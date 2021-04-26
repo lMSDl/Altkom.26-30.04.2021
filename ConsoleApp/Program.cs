@@ -1,4 +1,6 @@
 ﻿using System;
+using ConsoleApp.Delegates;
+using ConsoleApp.LambdaExamples;
 using DataService;
 using DataService.Interfaces;
 using Models;
@@ -11,6 +13,12 @@ namespace ConsoleApp
         static IService<Educator> EducatorsService { get; } = new Service<Educator>();
 
         static void Main(string[] args)
+        {
+            var example = new LinqExamples();
+            example.Execute();
+        }
+
+        private static void Service()
         {
             Console.WriteLine("Hello World!");
 
