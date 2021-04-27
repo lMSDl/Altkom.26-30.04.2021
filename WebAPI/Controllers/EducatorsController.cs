@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
-    public class StudentsController : CrudApiController<Student>
+    public class EducatorsController : CrudApiController<Educator>
     {
-        public StudentsController(IService<Student> service) : base(service)
+        public EducatorsController(IService<Educator> service) : base(service)
         {
         }
 
-        [HttpGet("{id}", Name = "StudentsController_Get")]
+        [HttpGet("{id}", Name = "EducatorsController_Get")]
         public override IActionResult Get(int id)
         {
             return base.Get(id);

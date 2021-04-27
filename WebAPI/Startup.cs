@@ -8,10 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
+using Models.Validators;
+using FluentValidation;
 
 namespace WebAPI
 {
@@ -27,13 +31,18 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(/*options => 
+                    options.RegisterValidatorsFromAssemblyContaining<EducatorValidator>()*/);
+            services.AddTransient<IValidator<Educator>, EducatorValidator>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
             });
 
-            services.AddSingleton<IStudentsService, StudentsService>();
+            services.AddSingleton<IService<Student>, StudentsService>();
+            services.AddSingleton<IService<Educator>, Service<Educator>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

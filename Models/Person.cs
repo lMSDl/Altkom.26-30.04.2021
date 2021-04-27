@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +11,13 @@ namespace Models
 {
     public abstract class Person : Entity
     {
-        public DateTime BirthDate { get; set; }
+        [Required]
+        public DateTime? BirthDate { get; set; }
         public string FirstName { get; set; }
         private string _lastName;
 
+        [Required]
+        [StringLength(16)]
         public string LastName
         {
             get
