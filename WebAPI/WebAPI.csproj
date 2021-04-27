@@ -8,4 +8,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataService.Interfaces\DataService.Interfaces.csproj" />
+    <ProjectReference Include="..\DataService\DataService.csproj" />
+  </ItemGroup>
+
 </Project>

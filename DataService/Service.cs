@@ -19,8 +19,14 @@ namespace DataService
             //        maxId = item.Id;
             //}
 
-            var maxId = Entities.Max(x => x.Id);
-            entity.Id = ++maxId;
+            if (Entities.Any())
+            {       var maxId = Entities.Max(x => x.Id);
+                    entity.Id = ++maxId;
+            }
+            else
+            {
+                entity.Id = 1;
+            }
             Entities.Add(entity);
 
             return entity;

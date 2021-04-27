@@ -1,3 +1,5 @@
+using DataService;
+using DataService.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +32,8 @@ namespace WebAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
             });
+
+            services.AddSingleton<IStudentsService, StudentsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +59,6 @@ namespace WebAPI
 
             app.UseAuthorization();
 
-            app.Map("/noEndpoint", appBuilder => app.Run(async context => await context.Response.WriteAsync("No Endpoint")));
 
             app.UseEndpoints(endpoints =>
             {
@@ -63,6 +66,8 @@ namespace WebAPI
 
                 endpoints.MapControllers();
             });
+
+            app.Map("/noEndpoint", appBuilder => app.Run(async context => await context.Response.WriteAsync("No Endpoint")));
         }
 
         private static Func<HttpContext, Func<Task>, Task> EndpointCheck()
