@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Models;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
@@ -29,6 +31,78 @@ namespace ConsoleApp
 
             writer = ServiceProvider.GetService<IFiggleWriteService>();
             writer.WriteLine("Figgle service from provider");
+            TaskExample();
+
+            Console.ReadLine();
+        }
+
+        private static async void TaskExample()
+        {
+            Task.Run(() =>
+            {
+                Thread.Sleep(3000);
+                Console.WriteLine("Hello from Task!");
+            });
+
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            var task = Task<int>.Run(() =>
+            {
+                Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+                Thread.Sleep(3000);
+                return 100;
+            });
+
+            /*task.ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Console.WriteLine(x.Result); })
+                .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); })
+                .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); })
+                .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); })
+                .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); });*/
+
+            var result = await task;
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            await Task.Delay(2000);
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            await Task.Delay(2000);
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            await Task.Delay(2000);
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            await Task.Delay(2000);
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            await Task.Delay(2000);
+
+        }
+
+        private static void ThreadExample()
+        {
+            var thread = new Thread(() =>
+            {
+                var counter = 0;
+                while (true)
+                {
+                    try
+                    {
+                        System.Threading.Thread.Sleep(-1);
+                    }
+                    catch (ThreadInterruptedException)
+                    {
+
+                    }
+                    Console.WriteLine(counter++);
+                }
+            });
+            thread.Start();
+
+            System.Threading.Thread.Sleep(1000);
+
+            thread.Interrupt();
+            System.Threading.Thread.Sleep(1000);
+            thread.Interrupt();
+            System.Threading.Thread.Sleep(2000);
+            thread.Interrupt();
+            System.Threading.Thread.Sleep(1000);
+            thread.Interrupt();
+            System.Threading.Thread.Sleep(10);
+            thread.Interrupt();
         }
 
         private static void ConfigureServiceProvider()
