@@ -8,7 +8,7 @@ namespace DataService
 {
     public class Service<T> : IService<T> where T : Entity
     {
-        private List<T> Entities { get; } = new List<T>();
+        protected List<T> Entities { get; } = new List<T>();
 
         public T Create(T entity)
         {

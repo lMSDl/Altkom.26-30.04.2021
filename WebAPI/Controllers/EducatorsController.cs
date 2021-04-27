@@ -1,4 +1,5 @@
 ﻿using DataService.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(Roles = nameof(UserRoles.Educator))]
     public class EducatorsController : CrudApiController<Educator>
     {
         public EducatorsController(IService<Educator> service) : base(service)

@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using Models.Validators;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using WebAPI.Services;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPI
 {
@@ -43,6 +46,27 @@ namespace WebAPI
 
             services.AddSingleton<IService<Student>, StudentsService>();
             services.AddSingleton<IService<Educator>, Service<Educator>>();
+            services.AddSingleton<IUsersService, UsersService>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(AuthService.Key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddScoped<IAuthService, AuthService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +90,7 @@ namespace WebAPI
 
             app.Use(EndpointCheck());
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

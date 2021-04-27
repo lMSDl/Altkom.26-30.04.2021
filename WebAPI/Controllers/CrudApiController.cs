@@ -1,4 +1,5 @@
 ﻿using DataService.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -20,12 +21,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = nameof(UserRoles.Read))]
         public IActionResult Get()
         {
             var entities = _service.Read();
             return Ok(entities);
         }
 
+        [Authorize(Roles = nameof(UserRoles.Read))]
         public virtual IActionResult Get(int id)
         {
             var entity = _service.Read(id);
@@ -35,6 +38,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = nameof(UserRoles.Create))]
+        [Authorize(Roles = nameof(UserRoles.Read))]
         public IActionResult Post(T entity)
         {
             /*if (!ModelState.IsValid)
@@ -45,6 +50,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = nameof(UserRoles.Update))]
         public IActionResult Put(int id, T entity)
         {
             if (_service.Read(id) == null)
@@ -55,6 +61,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = nameof(UserRoles.Delete))]
         public IActionResult Delete(int id)
         {
             if (_service.Read(id) == null)
