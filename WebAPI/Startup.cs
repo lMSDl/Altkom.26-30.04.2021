@@ -19,6 +19,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebAPI.Services;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace WebAPI
 {
@@ -67,6 +68,14 @@ namespace WebAPI
             });
 
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
