@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebAPI.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.ResponseCompression;
+using WebAPI.Filters;
 
 namespace WebAPI
 {
@@ -76,6 +77,9 @@ namespace WebAPI
             });
 
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
+
+            services.AddScoped<SampleActionFilter>();
+            services.AddSingleton<SampleAsyncActionFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
