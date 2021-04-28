@@ -1,5 +1,6 @@
 using DAL;
 using DAL.Services;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -48,6 +49,11 @@ namespace WebApiInternal
             services.AddScoped<DbService<RequestRaw>>();
             services.AddScoped<DbService<Error>>();
 
+            services.AddHealthChecks()
+                .AddCheck<RandomHealth>(nameof(RandomHealth))
+                .AddSqlServer(Configuration.GetConnectionString("MsSql"));
+            services.AddHealthChecksUI().AddInMemoryStorage();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +80,12 @@ namespace WebApiInternal
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapHealthChecksUI();
                 endpoints.MapControllers();
             });
         }
