@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{F1631687-2EF2-419C-945E-1C933851E2E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{F1631687-2EF2-419C-945E-1C933851E2E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{33F0B374-4268-4A6D-AF1D-6E97C1EBEA7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{33F0B374-4268-4A6D-AF1D-6E97C1EBEA7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataService", "DataService\DataService.csproj", "{46E1F3C9-38F9-42C6-BCE4-57BF6CE1FAB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataService", "DataService\DataService.csproj", "{46E1F3C9-38F9-42C6-BCE4-57BF6CE1FAB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataService.Interfaces", "DataService.Interfaces\DataService.Interfaces.csproj", "{787DB2DC-176E-4251-9859-893D6CDAF18A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataService.Interfaces", "DataService.Interfaces\DataService.Interfaces.csproj", "{787DB2DC-176E-4251-9859-893D6CDAF18A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{D0744FD8-E914-48CF-9D09-C53CEF0CEFD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{D0744FD8-E914-48CF-9D09-C53CEF0CEFD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{04259635-1C2A-42DA-812A-E521768B47D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{04259635-1C2A-42DA-812A-E521768B47D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinWeb", "OwinWeb\OwinWeb.csproj", "{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{04259635-1C2A-42DA-812A-E521768B47D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04259635-1C2A-42DA-812A-E521768B47D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04259635-1C2A-42DA-812A-E521768B47D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
