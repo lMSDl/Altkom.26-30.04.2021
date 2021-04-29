@@ -2,12 +2,16 @@
 using ConsoleApp.Services;
 using DataService;
 using DataService.Interfaces;
+using Grpc.Net.Client;
+using Grpc.Protos;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Models;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,10 +28,36 @@ namespace ConsoleApp
 
         private static async Task Main(string[] args)
         {
+
+            using (var channel = GrpcChannel.ForAddress("http://localhost:5000"))
+            {
+                var client = new GrpcStrudentsService.GrpcStrudentsServiceClient(channel);
+
+                var student = new Grpc.Protos.Student { FirstName = "Ewa", LastName = "Ewowska" };
+                await client.CreateAsync(student);
+                student = new Grpc.Protos.Student { FirstName = "Damian", LastName = "Damianowski" };
+                await client.CreateAsync(student);
+
+                var students = await client.ReadAsync(new None());
+                students.Collection.ToList().ForEach(x => Console.WriteLine( JsonConvert.SerializeObject(x)));
+
+                await client.DeleteAsync(students.Collection.First());
+
+                students = await client.ReadAsync(new None());
+                students.Collection.ToList().ForEach(x => Console.WriteLine(JsonConvert.SerializeObject(x)));
+
+
+            }
+
+                Console.ReadLine();
+        }
+
+        private static async Task SignalR()
+        {
             HubConnection connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5000/signalR/Students")
-                .WithAutomaticReconnect()
-                .Build();
+                            .WithUrl("http://localhost:5000/signalR/Students")
+                            .WithAutomaticReconnect()
+                            .Build();
 
             connection.Reconnecting += connetionId =>
             {
@@ -41,7 +71,7 @@ namespace ConsoleApp
             };
 
             connection.On<string>("NewClient", x => Console.WriteLine($"new client: {x}"));
-            connection.On<Student>("Post", x => Console.WriteLine(x.ToJson()));
+            connection.On<Models.Student>("Post", x => Console.WriteLine(x.ToJson()));
 
             while (connection.State != HubConnectionState.Connected)
             {
@@ -60,7 +90,7 @@ namespace ConsoleApp
             await connection.SendAsync("JoinGroup", "2");
             await Task.Delay(2000);
 
-            await connection.SendAsync("AddStudent", new Student { FirstName = "Ewa", LastName = "Ewowska" });
+            await connection.SendAsync("AddStudent", new Models.Student { FirstName = "Ewa", LastName = "Ewowska" });
 
 
             Console.ReadLine();
@@ -200,8 +230,8 @@ namespace ConsoleApp
         {
             Console.WriteLine("Hello World!");
 
-            Student student1 = new Student();
-            Student student2 = new Student("Ewa", "Ewowska") { BirthDate = new DateTime(1985, 4, 22) };
+            Models.Student student1 = new Models.Student();
+            Models.Student student2 = new Models.Student("Ewa", "Ewowska") { BirthDate = new DateTime(1985, 4, 22) };
             Educator educator1 = new Educator() { FirstName = "Damian", LastName = "Damianowski" };
             Educator educator2 = new Educator() { FirstName = "Damian", LastName = "Damianowski", Address = "Warszawska 12" };
 
@@ -211,10 +241,10 @@ namespace ConsoleApp
 
             StudentsService.Create(student1);
             student2 = StudentsService.Create(student2);
-            Student student3 = new Student() { Address = "Kwiatowa 44" };
+            Models.Student student3 = new Models.Student() { Address = "Kwiatowa 44" };
             StudentsService.Update(student2.Id, student3);
 
-            foreach (Student item in StudentsService.Read())
+            foreach (Models.Student item in StudentsService.Read())
             {
                 Console.WriteLine(item.ToJson());
             }

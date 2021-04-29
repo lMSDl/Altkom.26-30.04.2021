@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "Grpc.Protos";
+
+package Grpc.Protos;
+
+service GrpcStrudentsService {
+	rpc Create (Student) returns (Student);
+	rpc Read (None) returns (Students);
+	rpc ReadById (Student) returns (Student);
+	rpc Update (Student) returns (None);
+	rpc Delete (Student) returns (None);
+}
+
+message None {}
+
+message Student {
+	int32 Id = 1;
+	string FirstName = 2;
+	string LastName = 3;
+}
+
+message Students {
+	repeated Student Collection = 1;
+}

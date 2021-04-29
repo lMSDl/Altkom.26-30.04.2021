@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinWeb", "OwinWeb\OwinWeb.csproj", "{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grpc", "Grpc\Grpc.csproj", "{1BFE8924-1E3B-47F7-9AC8-425474CC3974}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49AA69F1-8B56-44A8-BCF3-9DBB93AE74EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BFE8924-1E3B-47F7-9AC8-425474CC3974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BFE8924-1E3B-47F7-9AC8-425474CC3974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BFE8924-1E3B-47F7-9AC8-425474CC3974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BFE8924-1E3B-47F7-9AC8-425474CC3974}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
