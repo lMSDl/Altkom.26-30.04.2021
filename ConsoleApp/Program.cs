@@ -2,6 +2,7 @@
 using ConsoleApp.Services;
 using DataService;
 using DataService.Interfaces;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,7 +22,52 @@ namespace ConsoleApp
         private static Settings Settings { get; } = new Settings();
         private static IConfigurationRoot Config { get; set; }
 
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
+        {
+            HubConnection connection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5000/signalR/Students")
+                .WithAutomaticReconnect()
+                .Build();
+
+            connection.Reconnecting += connetionId =>
+            {
+                Console.WriteLine("Reconnecting...");
+                return Task.CompletedTask;
+            };
+            connection.Closed += connetionId =>
+            {
+                Console.WriteLine("Closed");
+                return Task.CompletedTask;
+            };
+
+            connection.On<string>("NewClient", x => Console.WriteLine($"new client: {x}"));
+            connection.On<Student>("Post", x => Console.WriteLine(x.ToJson()));
+
+            while (connection.State != HubConnectionState.Connected)
+            {
+                Console.WriteLine("Connecting...");
+                try
+                {
+                    await connection.StartAsync();
+                    Console.WriteLine("Connected");
+                }
+                catch
+                {
+                    Console.WriteLine("Connection failed");
+                }
+            }
+
+            await connection.SendAsync("JoinGroup", "2");
+            await Task.Delay(2000);
+
+            await connection.SendAsync("AddStudent", new Student { FirstName = "Ewa", LastName = "Ewowska" });
+
+
+            Console.ReadLine();
+            await connection.DisposeAsync();
+        }
+
+        private static void OldMain()
         {
             Configuration();
             ConfigureServiceProvider();
@@ -32,8 +78,6 @@ namespace ConsoleApp
             writer = ServiceProvider.GetService<IFiggleWriteService>();
             writer.WriteLine("Figgle service from provider");
             TaskExample();
-
-            Console.ReadLine();
         }
 
         private static async void TaskExample()

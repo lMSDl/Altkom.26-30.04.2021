@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
 {
     public abstract class CrudApiController<T> : ApiController where T : Entity
     {
-        private IService<T> _service;
+        protected IService<T> _service;
 
         public CrudApiController(IService<T> service)
         {
@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Authorize(Roles = nameof(UserRoles.Create))]
         [Authorize(Roles = nameof(UserRoles.Read))]
-        public IActionResult Post(T entity)
+        public virtual IActionResult Post(T entity)
         {
             /*if (!ModelState.IsValid)
                 return BadRequest(ModelState);*/

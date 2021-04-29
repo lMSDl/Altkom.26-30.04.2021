@@ -21,6 +21,7 @@ using WebAPI.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.ResponseCompression;
 using WebAPI.Filters;
+using WebAPI.Hubs;
 
 namespace WebAPI
 {
@@ -80,6 +81,8 @@ namespace WebAPI
 
             services.AddScoped<SampleActionFilter>();
             services.AddSingleton<SampleAsyncActionFilter>();
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -109,6 +112,8 @@ namespace WebAPI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<StudentsHub>("signalR/Students");
+
                 endpoints.MapGet("/endpoint", async context => await context.Response.WriteAsync("Get Endpoint"));
 
                 endpoints.MapControllers();
