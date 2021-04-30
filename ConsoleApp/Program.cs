@@ -21,25 +21,31 @@ namespace ConsoleApp
     {
         private static IStudentsService StudentsService { get; } = new StudentsService();
         private static IService<Educator> EducatorsService { get; } = new Service<Educator>();
-        static ServiceProvider ServiceProvider { get; set; }
+        private static ServiceProvider ServiceProvider { get; set; }
 
         private static Settings Settings { get; } = new Settings();
         private static IConfigurationRoot Config { get; set; }
 
         private static async Task Main(string[] args)
         {
+            await gRPC();
 
-            using (var channel = GrpcChannel.ForAddress("http://localhost:5000"))
+            Console.ReadLine();
+        }
+
+        private static async Task gRPC()
+        {
+            using (GrpcChannel channel = GrpcChannel.ForAddress("http://localhost:5000"))
             {
-                var client = new GrpcStrudentsService.GrpcStrudentsServiceClient(channel);
+                GrpcStrudentsService.GrpcStrudentsServiceClient client = new GrpcStrudentsService.GrpcStrudentsServiceClient(channel);
 
-                var student = new Grpc.Protos.Student { FirstName = "Ewa", LastName = "Ewowska" };
+                Grpc.Protos.Student student = new Grpc.Protos.Student { FirstName = "Ewa", LastName = "Ewowska" };
                 await client.CreateAsync(student);
                 student = new Grpc.Protos.Student { FirstName = "Damian", LastName = "Damianowski" };
                 await client.CreateAsync(student);
 
-                var students = await client.ReadAsync(new None());
-                students.Collection.ToList().ForEach(x => Console.WriteLine( JsonConvert.SerializeObject(x)));
+                Students students = await client.ReadAsync(new None());
+                students.Collection.ToList().ForEach(x => Console.WriteLine(JsonConvert.SerializeObject(x)));
 
                 await client.DeleteAsync(students.Collection.First());
 
@@ -102,7 +108,7 @@ namespace ConsoleApp
             Configuration();
             ConfigureServiceProvider();
 
-            var writer = ServiceProvider.GetService<IWriteService>();
+            IWriteService writer = ServiceProvider.GetService<IWriteService>();
             writer.WriteLine("service from provider");
 
             writer = ServiceProvider.GetService<IFiggleWriteService>();
@@ -132,7 +138,7 @@ namespace ConsoleApp
                 .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); })
                 .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); });*/
 
-            var result = await task;
+            int result = await task;
             Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             await Task.Delay(2000);
             Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
@@ -148,9 +154,9 @@ namespace ConsoleApp
 
         private static void ThreadExample()
         {
-            var thread = new Thread(() =>
+            Thread thread = new Thread(() =>
             {
-                var counter = 0;
+                int counter = 0;
                 while (true)
                 {
                     try
@@ -181,7 +187,7 @@ namespace ConsoleApp
 
         private static void ConfigureServiceProvider()
         {
-            var serviceCollection = new ServiceCollection();
+            ServiceCollection serviceCollection = new ServiceCollection();
             serviceCollection
                 .AddScoped<IWriteService, ConsoleService>()
                 .AddScoped<IFiggleWriteService, FiggleWriteService>()
