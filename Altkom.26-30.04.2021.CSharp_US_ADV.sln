@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsServices.TopShelf", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DobrePraktyki", "DobrePraktyki\DobrePraktyki.csproj", "{B1651B81-7359-4E61-B9B1-0B269D3BE8BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{F8896ADE-7099-462A-AAB2-658C6FBB7408}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{B1651B81-7359-4E61-B9B1-0B269D3BE8BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1651B81-7359-4E61-B9B1-0B269D3BE8BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1651B81-7359-4E61-B9B1-0B269D3BE8BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8896ADE-7099-462A-AAB2-658C6FBB7408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8896ADE-7099-462A-AAB2-658C6FBB7408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8896ADE-7099-462A-AAB2-658C6FBB7408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8896ADE-7099-462A-AAB2-658C6FBB7408}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

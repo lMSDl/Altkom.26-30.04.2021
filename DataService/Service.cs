@@ -36,7 +36,7 @@ namespace DataService
         {
             var entity = Read(id);
             if (entity == null)
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException(id.ToString());
             Entities.Remove(entity);
         }
 
