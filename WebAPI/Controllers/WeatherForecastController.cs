@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Filters;
 
 namespace WebAPI.Controllers
 {
+    [ServiceFilter(typeof(SampleAsyncActionFilter))]
+    [AllowAnonymous]
     public class WeatherForecastController : ApiController
     {
         private static readonly string[] Summaries = new[]
@@ -22,8 +26,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Method()
+        public async Task<IEnumerable<WeatherForecast>> Method()
         {
+            await Task.Delay(5000);
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

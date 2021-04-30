@@ -2,11 +2,16 @@
 using ConsoleApp.Services;
 using DataService;
 using DataService.Interfaces;
+using Grpc.Net.Client;
+using Grpc.Protos;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Models;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,24 +21,99 @@ namespace ConsoleApp
     {
         private static IStudentsService StudentsService { get; } = new StudentsService();
         private static IService<Educator> EducatorsService { get; } = new Service<Educator>();
-        static ServiceProvider ServiceProvider { get; set; }
+        private static ServiceProvider ServiceProvider { get; set; }
 
         private static Settings Settings { get; } = new Settings();
         private static IConfigurationRoot Config { get; set; }
 
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
+        {
+            await gRPC();
+
+            Console.ReadLine();
+        }
+
+        private static async Task gRPC()
+        {
+            using (GrpcChannel channel = GrpcChannel.ForAddress("http://localhost:5000"))
+            {
+                GrpcStrudentsService.GrpcStrudentsServiceClient client = new GrpcStrudentsService.GrpcStrudentsServiceClient(channel);
+
+                Grpc.Protos.Student student = new Grpc.Protos.Student { FirstName = "Ewa", LastName = "Ewowska" };
+                await client.CreateAsync(student);
+                student = new Grpc.Protos.Student { FirstName = "Damian", LastName = "Damianowski" };
+                await client.CreateAsync(student);
+
+                Students students = await client.ReadAsync(new None());
+                students.Collection.ToList().ForEach(x => Console.WriteLine(JsonConvert.SerializeObject(x)));
+
+                await client.DeleteAsync(students.Collection.First());
+
+                students = await client.ReadAsync(new None());
+                students.Collection.ToList().ForEach(x => Console.WriteLine(JsonConvert.SerializeObject(x)));
+
+
+            }
+
+                Console.ReadLine();
+        }
+
+        private static async Task SignalR()
+        {
+            HubConnection connection = new HubConnectionBuilder()
+                            .WithUrl("http://localhost:5000/signalR/Students")
+                            .WithAutomaticReconnect()
+                            .Build();
+
+            connection.Reconnecting += connetionId =>
+            {
+                Console.WriteLine("Reconnecting...");
+                return Task.CompletedTask;
+            };
+            connection.Closed += connetionId =>
+            {
+                Console.WriteLine("Closed");
+                return Task.CompletedTask;
+            };
+
+            connection.On<string>("NewClient", x => Console.WriteLine($"new client: {x}"));
+            connection.On<Models.Student>("Post", x => Console.WriteLine(x.ToJson()));
+
+            while (connection.State != HubConnectionState.Connected)
+            {
+                Console.WriteLine("Connecting...");
+                try
+                {
+                    await connection.StartAsync();
+                    Console.WriteLine("Connected");
+                }
+                catch
+                {
+                    Console.WriteLine("Connection failed");
+                }
+            }
+
+            await connection.SendAsync("JoinGroup", "2");
+            await Task.Delay(2000);
+
+            await connection.SendAsync("AddStudent", new Models.Student { FirstName = "Ewa", LastName = "Ewowska" });
+
+
+            Console.ReadLine();
+            await connection.DisposeAsync();
+        }
+
+        private static void OldMain()
         {
             Configuration();
             ConfigureServiceProvider();
 
-            var writer = ServiceProvider.GetService<IWriteService>();
+            IWriteService writer = ServiceProvider.GetService<IWriteService>();
             writer.WriteLine("service from provider");
 
             writer = ServiceProvider.GetService<IFiggleWriteService>();
             writer.WriteLine("Figgle service from provider");
             TaskExample();
-
-            Console.ReadLine();
         }
 
         private static async void TaskExample()
@@ -58,7 +138,7 @@ namespace ConsoleApp
                 .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); })
                 .ContinueWith(x => { Console.WriteLine(Thread.CurrentThread.ManagedThreadId); Task.Delay(2000); });*/
 
-            var result = await task;
+            int result = await task;
             Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             await Task.Delay(2000);
             Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
@@ -74,9 +154,9 @@ namespace ConsoleApp
 
         private static void ThreadExample()
         {
-            var thread = new Thread(() =>
+            Thread thread = new Thread(() =>
             {
-                var counter = 0;
+                int counter = 0;
                 while (true)
                 {
                     try
@@ -107,7 +187,7 @@ namespace ConsoleApp
 
         private static void ConfigureServiceProvider()
         {
-            var serviceCollection = new ServiceCollection();
+            ServiceCollection serviceCollection = new ServiceCollection();
             serviceCollection
                 .AddScoped<IWriteService, ConsoleService>()
                 .AddScoped<IFiggleWriteService, FiggleWriteService>()
@@ -156,8 +236,8 @@ namespace ConsoleApp
         {
             Console.WriteLine("Hello World!");
 
-            Student student1 = new Student();
-            Student student2 = new Student("Ewa", "Ewowska") { BirthDate = new DateTime(1985, 4, 22) };
+            Models.Student student1 = new Models.Student();
+            Models.Student student2 = new Models.Student("Ewa", "Ewowska") { BirthDate = new DateTime(1985, 4, 22) };
             Educator educator1 = new Educator() { FirstName = "Damian", LastName = "Damianowski" };
             Educator educator2 = new Educator() { FirstName = "Damian", LastName = "Damianowski", Address = "Warszawska 12" };
 
@@ -167,10 +247,10 @@ namespace ConsoleApp
 
             StudentsService.Create(student1);
             student2 = StudentsService.Create(student2);
-            Student student3 = new Student() { Address = "Kwiatowa 44" };
+            Models.Student student3 = new Models.Student() { Address = "Kwiatowa 44" };
             StudentsService.Update(student2.Id, student3);
 
-            foreach (Student item in StudentsService.Read())
+            foreach (Models.Student item in StudentsService.Read())
             {
                 Console.WriteLine(item.ToJson());
             }
