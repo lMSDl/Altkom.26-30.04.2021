@@ -15,6 +15,11 @@ namespace DobrePraktyki.DesignPrinciples
             return Customers.Remove(customer);
         }
 
+        public Customer FindById(int id)
+        {
+            return Customers.SingleOrDefault(x => x.Id == id);
+        }
+
         public Customer FindByDebit(float debit)
         {
             return Customers.SingleOrDefault(x => x.AllowedDebit == debit);
@@ -22,11 +27,11 @@ namespace DobrePraktyki.DesignPrinciples
 
         public bool Charge(int customerId, float amount)
         {
-            var customer = Customers.SingleOrDefault(x => x.Id == customerId);
+            var customer = FindById(customerId);
             if (customer == null)
                 return false;
 
-            if (customer.Income - customer.Outcome + customer.AllowedDebit < amount)
+            if (GetBalance(customerId) + customer.AllowedDebit < amount)
                 return false;
 
             customer.Outcome += amount;
@@ -35,7 +40,7 @@ namespace DobrePraktyki.DesignPrinciples
 
         public void Fund(int customerId, float amount)
         {
-            var customer = Customers.Where(x => x.Id == customerId).SingleOrDefault();
+            var customer = FindById(customerId);
             if (customer == null)
                 return;
             customer.Income += amount;
@@ -43,7 +48,7 @@ namespace DobrePraktyki.DesignPrinciples
 
         public float? GetBalance(int customerId)
         {
-            var customer = Customers.Where(x => x.Id == customerId).SingleOrDefault();
+            var customer = FindById(customerId);
             return customer?.Income - customer?.Outcome;
         }
     }
