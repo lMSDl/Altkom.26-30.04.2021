@@ -6,36 +6,6 @@ using System.Threading.Tasks;
 
 namespace DobrePraktyki.DesignPrinciples
 {
-    public class Customer
-    {
-        public Customer(int id)
-        {
-            Id = id;
-        }
-
-        public int Id { get; }
-        public string CustomerName { get; set; }
-        public float Income { get; set; }
-        public float Outcome { get; set; }
-
-        private float allowedDebit;
-
-        public float GetAllowedDebit()
-        {
-            return allowedDebit;
-        }
-
-        public void SetAllowedDebit(float value)
-        {
-            allowedDebit = value;
-        }
-
-        public bool GetDebit()
-        {
-            return Income - Outcome < 0;
-        }
-    }
-
     public class CustomerService
     {
         private ICollection<Customer> Customers { get; } = new List<Customer> { new Customer(1), new Customer(2), new Customer(3), new Customer(4), new Customer(5) };
@@ -47,7 +17,7 @@ namespace DobrePraktyki.DesignPrinciples
 
         public Customer FindByDebit(float debit)
         {
-            return Customers.SingleOrDefault(x => x.GetAllowedDebit() == debit);
+            return Customers.SingleOrDefault(x => x.AllowedDebit == debit);
         }
 
         public bool Charge(int customerId, float amount)
@@ -56,7 +26,7 @@ namespace DobrePraktyki.DesignPrinciples
             if (customer == null)
                 return false;
 
-            if (customer.Income - customer.Outcome + customer.GetAllowedDebit() < amount)
+            if (customer.Income - customer.Outcome + customer.AllowedDebit < amount)
                 return false;
 
             customer.Outcome += amount;
