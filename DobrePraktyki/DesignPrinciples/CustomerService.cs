@@ -10,19 +10,9 @@ namespace DobrePraktyki.DesignPrinciples
     {
         private ICollection<Customer> Customers { get; } = new List<Customer> { new Customer(1), new Customer(2), new Customer(3), new Customer(4), new Customer(5) };
 
-        public bool DeleteCustomer(Customer customer)
-        {
-            return Customers.Remove(customer);
-        }
-
         public Customer FindById(int id)
         {
             return Customers.SingleOrDefault(x => x.Id == id);
-        }
-
-        public Customer FindByDebit(float debit)
-        {
-            return Customers.SingleOrDefault(x => x.AllowedDebit == debit);
         }
 
         public bool Charge(int customerId, float amount)
