@@ -14,17 +14,5 @@ namespace DobrePraktyki.DesignPrinciples
         {
             return Customers.SingleOrDefault(x => x.Id == id);
         }
-
-        public bool Charge(int customerId, float amount)
-        {
-            var customer = FindById(customerId);
-            return customer?.Charge(amount) ?? false;
-        }
-
-        public void Fund(int customerId, float amount)
-        {
-            var customer = FindById(customerId);
-            customer?.Fund(amount);
-        }
     }
 }
