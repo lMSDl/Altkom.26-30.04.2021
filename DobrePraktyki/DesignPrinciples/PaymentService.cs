@@ -8,14 +8,14 @@ namespace DobrePraktyki.DesignPrinciples
 {
     public class PaymentService
     {
-        public bool Charge(Customer customer, float amount)
+        public bool Charge(PaymentAccount paymentAccount, float amount)
         {
-            return customer?.PaymentAccount.Charge(amount) ?? false;
+            return paymentAccount?.Charge(amount) ?? false;
         }
 
-        public void Fund(Customer customer, float amount)
+        public void Fund(PaymentAccount paymentAccount, float amount)
         {
-            customer?.PaymentAccount.Fund(amount);
+            paymentAccount.Fund(amount);
         }
     }
 }
